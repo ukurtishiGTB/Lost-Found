@@ -16,14 +16,6 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     
-                    <x-nav-link :href="route('items.lost')" :active="request()->routeIs('items.lost')">
-                        {{ __('Lost Items') }}
-                    </x-nav-link>
-                    
-                    <x-nav-link :href="route('items.found')" :active="request()->routeIs('items.found')">
-                        {{ __('Found Items') }}
-                    </x-nav-link>
-                    
                     <x-nav-link :href="route('items.create')" :active="request()->routeIs('items.create')">
                         {{ __('Report Item') }}
                     </x-nav-link>

@@ -1,100 +1,95 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ $item->title }}
-        </h2>
+        <div class="flex items-center justify-between animate-fade-in">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                {{ $item->title }}
+            </h2>
+            <div class="flex items-center space-x-4">
+                @can('update', $item)
+                    <a href="{{ route('items.edit', $item) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white gradient-bg rounded-lg hover:opacity-90 transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Edit
+                    </a>
+                @endcan
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold">Description</h3>
-                        <p class="mt-2">{{ $item->description }}</p>
-                    </div>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-xl custom-shadow animate-fade-in" style="animation-delay: 0.2s">
+                <div class="p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Main Content -->
+                        <div class="lg:col-span-2 space-y-8">
+                            <div class="glass-effect p-6 rounded-xl">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Description</h3>
+                                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ $item->description }}</p>
+                            </div>
 
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold">Details</h3>
-                        <dl class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div>
-                                <dt class="font-medium">Location</dt>
-                                <dd>{{ $item->location }}</dd>
-                            </div>
-                            <div>
-                                <dt class="font-medium">Category</dt>
-                                <dd>{{ ucfirst($item->category) }}</dd>
-                            </div>
-                            <div>
-                                <dt class="font-medium">Status</dt>
-                                <dd>
-                                    <span class="px-2 py-1 text-sm {{ $item->status === 'lost' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }} rounded">
-                                        {{ ucfirst($item->status) }}
-                                    </span>
-                                </dd>
-                            </div>
-                            @if($item->date_found)
-                            <div>
-                                <dt class="font-medium">Date Found</dt>
-                                <dd>{{ $item->date_found->format('Y-m-d') }}</dd>
-                            </div>
-                            @endif
-                        </dl>
-                    </div>
-
-                    @if($item->status !== 'claimed' && auth()->id() !== $item->user_id)
-                        <div class="mt-6 border-t pt-6">
-                            <h3 class="text-lg font-semibold mb-4">Submit a Claim</h3>
-                            <form method="POST" action="{{ route('claims.store', $item) }}" class="space-y-6">
-                                @csrf
-                                <div>
-                                    <x-input-label for="proof_description" :value="__('Proof Description')" />
-                                    <textarea id="proof_description" name="proof_description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required></textarea>
-                                    <x-input-error :messages="$errors->get('proof_description')" class="mt-2" />
-                                </div>
-                                <div class="flex justify-end">
-                                    <x-primary-button>{{ __('Submit Claim') }}</x-primary-button>
-                                </div>
-                            </form>
-                        </div>
-                    @endif
-
-                    @if($item->claims->isNotEmpty() && (auth()->user()->is_admin || auth()->id() === $item->user_id))
-                        <div class="mt-6 border-t pt-6">
-                            <h3 class="text-lg font-semibold mb-4">Claims</h3>
-                            <div class="space-y-4">
-                                @foreach($item->claims as $claim)
-                                    <div class="border p-4 rounded-lg">
-                                        <p class="mb-2">{{ $claim->proof_description }}</p>
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-sm text-gray-600">By: {{ $claim->user->name }}</span>
-                                            @if(auth()->user()->is_admin && !$claim->verified)
-                                                <form method="POST" action="{{ route('claims.verify', $claim) }}">
-                                                    @csrf
-                                                    <x-primary-button>{{ __('Verify Claim') }}</x-primary-button>
-                                                </form>
-                                            @endif
-                                        </div>
+                            @if($item->status === 'found' && !$item->claims()->where('verified', true)->exists())
+                                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-1 rounded-xl animate-fade-in" style="animation-delay: 0.4s">
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Submit a Claim</h3>
+                                        <form action="{{ route('claims.store', $item) }}" method="POST" class="space-y-4">
+                                            @csrf
+                                            <div>
+                                                <label for="proof_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Proof Description</label>
+                                                <textarea name="proof_description" id="proof_description" rows="4" 
+                                                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200"
+                                                    placeholder="Please provide details to prove your ownership..."></textarea>
+                                            </div>
+                                            <div class="flex justify-end">
+                                                <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white gradient-bg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                                                    Submit Claim
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
-                                @endforeach
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="lg:col-span-1 animate-fade-in" style="animation-delay: 0.3s">
+                            <div class="glass-effect rounded-xl p-6 space-y-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Details</h3>
+                                <dl class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
+                                        <dd class="mt-1">
+                                            <span class="status-badge {{ 
+                                                $item->status === 'lost' ? 'bg-red-100 text-red-800' : 
+                                                ($item->status === 'found' ? 'bg-green-100 text-green-800' : 
+                                                'bg-blue-100 text-blue-800') }}">
+                                                {{ ucfirst($item->status) }}
+                                            </span>
+                                        </dd>
+                                    </div>
+                                    <div class="card-hover p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Location</dt>
+                                        <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $item->location }}</dd>
+                                    </div>
+                                    <div class="card-hover p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Category</dt>
+                                        <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ ucfirst($item->category) }}</dd>
+                                    </div>
+                                    @if($item->date_found)
+                                        <div class="card-hover p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Date Found</dt>
+                                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $item->date_found->format('M d, Y') }}</dd>
+                                        </div>
+                                    @endif
+                                    <div class="card-hover p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Posted By</dt>
+                                        <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $item->user->name }}</dd>
+                                    </div>
+                                </dl>
                             </div>
                         </div>
-                    @endif
-
-                    @can('update', $item)
-                        <div class="mt-6 flex space-x-4">
-                            <a href="{{ route('items.edit', $item) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                                {{ __('Edit') }}
-                            </a>
-                            <form method="POST" action="{{ route('items.destroy', $item) }}" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <x-danger-button onclick="return confirm('Are you sure you want to delete this item?')">
-                                    {{ __('Delete') }}
-                                </x-danger-button>
-                            </form>
-                        </div>
-                    @endcan
+                    </div>
                 </div>
             </div>
         </div>

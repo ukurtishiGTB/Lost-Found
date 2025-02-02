@@ -1,8 +1,3 @@
-@import 'custom.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Custom animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -37,6 +32,7 @@
     background: rgba(17, 24, 39, 0.7);
 }
 
+/* Custom components */
 .status-badge {
     padding: 0.25rem 1rem;
     border-radius: 9999px;
@@ -47,8 +43,10 @@
     transition: all 0.2s ease;
 }
 
+.status-badge:hover {
+    transform: scale(1.05);
+}
+
 .custom-shadow {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-
-

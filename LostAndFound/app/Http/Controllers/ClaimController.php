@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class ClaimController extends Controller
 {
+    public function index()
+    {
+        $claims = Claim::with(['item', 'user'])->latest()->get();
+        return view('claims.index', compact('claims'));
+    }
+
     public function store(Request $request, Item $item)
     {
         $validated = $request->validate([
@@ -20,7 +26,7 @@ class ClaimController extends Controller
     
         Claim::create($validated);
     
-        return redirect()->route('items.show', $item)
+        return redirect()->route('claims.index')
             ->with('success', 'Claim submitted successfully.');
     }
 

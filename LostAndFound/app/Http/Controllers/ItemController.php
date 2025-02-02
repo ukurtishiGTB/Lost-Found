@@ -18,6 +18,7 @@ class ItemController extends Controller
             'title' => 'All Items'
         ]);
     }
+
     public function create()
     {
         return view('items.create');
@@ -84,30 +85,58 @@ class ItemController extends Controller
     }
 
     public function lost()
-{
-    $items = Item::where('status', 'lost')
-        ->with('user')
-        ->latest()
-        ->paginate(10);
-    
-    return view('items.index', [
-        'items' => $items,
-        'title' => 'Lost Items'
-    ]);
-}
+    {
+        $items = Item::where('status', 'lost')
+            ->with('user')
+            ->latest()
+            ->paginate(10);
+        
+        return view('items.index', [
+            'items' => $items,
+            'title' => 'Lost Items'
+        ]);
+    }
 
-public function found()
-{
-    $items = Item::where('status', 'found')
-        ->with('user')
-        ->latest()
-        ->paginate(10);
-    
-    return view('items.index', [
-        'items' => $items,
-        'title' => 'Found Items'
-    ]);
-}
+    public function found()
+    {
+        $items = Item::where('status', 'found')
+            ->with('user')
+            ->latest()
+            ->paginate(10);
+        
+        return view('items.index', [
+            'items' => $items,
+            'title' => 'Found Items'
+        ]);
+    }
 
+    public function reportFound(Item $item)
+    {
+        if ($item->status !== 'lost') {
+            return redirect()->back()->with('error', 'This item is not marked as lost.');
+        }
+        
+        return view('items.report-found', compact('item'));
+    }
 
+    public function markFound(Request $request, Item $item)
+    {
+        if ($item->status !== 'lost') {
+            return redirect()->back()->with('error', 'This item is not marked as lost.');
+        }
+
+        $validated = $request->validate([
+            'found_location' => 'required|string|max:255',
+            'date_found' => 'required|date',
+        ]);
+
+        $item->update([
+            'status' => 'found',
+            'location' => $validated['found_location'],
+            'date_found' => $validated['date_found'],
+        ]);
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Item has been marked as found.');
+    }
 }

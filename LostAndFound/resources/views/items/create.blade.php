@@ -1,89 +1,79 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Report Lost/Found Item') }}
-        </h2>
+        <div class="flex items-center justify-between animate-fade-in">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                {{ __('Report Lost Item') }}
+            </h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('items.store') }}" class="space-y-6">
-                        @csrf
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-xl custom-shadow animate-fade-in" style="animation-delay: 0.2s">
+                <div class="p-8">
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-1 rounded-xl">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
+                            <form method="POST" action="{{ route('items.store') }}" class="space-y-6">
+                                @csrf
+                                <input type="hidden" name="status" value="lost">
 
-                        <div>
-                            <x-input-label for="title" :value="__('Title')" />
-                            <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" :value="old('title')" required autofocus />
-                            <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                        </div>
+                                <div class="glass-effect p-6 rounded-lg space-y-6">
+                                    <div>
+                                        <x-input-label for="title" :value="__('Title')" class="text-base mb-2" />
+                                        <x-text-input id="title" name="title" type="text" 
+                                            class="mt-1 block w-full text-base transition-all duration-200" 
+                                            :value="old('title')" required autofocus 
+                                            placeholder="Enter a descriptive title" />
+                                        <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                                    </div>
 
-                        <div>
-                            <x-input-label for="description" :value="__('Description')" />
-                            <textarea id="description" name="description" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>{{ old('description') }}</textarea>
-                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                        </div>
+                                    <div>
+                                        <x-input-label for="description" :value="__('Description')" class="text-base mb-2" />
+                                        <textarea id="description" name="description" rows="4" 
+                                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 text-base transition-all duration-200"
+                                            required placeholder="Provide detailed description of the item...">{{ old('description') }}</textarea>
+                                        <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                                    </div>
 
-                        <div>
-                            <x-input-label for="location" :value="__('Location')" />
-                            <x-text-input id="location" name="location" type="text" class="mt-1 block w-full" :value="old('location')" required />
-                            <x-input-error :messages="$errors->get('location')" class="mt-2" />
-                        </div>
+                                    <div>
+                                        <x-input-label for="location" :value="__('Last Seen Location')" class="text-base mb-2" />
+                                        <x-text-input id="location" name="location" type="text" 
+                                            class="mt-1 block w-full text-base transition-all duration-200" 
+                                            :value="old('location')" required 
+                                            placeholder="Where was it last seen?" />
+                                        <x-input-error :messages="$errors->get('location')" class="mt-2" />
+                                    </div>
 
-                        <div>
-                            <x-input-label for="category" :value="__('Category')" />
-                            <select id="category" name="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="electronics" {{ old('category') === 'electronics' ? 'selected' : '' }}>Electronics</option>
-                                <option value="clothing" {{ old('category') === 'clothing' ? 'selected' : '' }}>Clothing</option>
-                                <option value="accessories" {{ old('category') === 'accessories' ? 'selected' : '' }}>Accessories</option>
-                                <option value="documents" {{ old('category') === 'documents' ? 'selected' : '' }}>Documents</option>
-                                <option value="other" {{ old('category') === 'other' ? 'selected' : '' }}>Other</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('category')" class="mt-2" />
-                        </div>
+                                    <div>
+                                        <x-input-label for="category" :value="__('Category')" class="text-base mb-2" />
+                                        <select id="category" name="category" 
+                                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 text-base transition-all duration-200">
+                                            <option value="">Select a category</option>
+                                            <option value="electronics">Electronics</option>
+                                            <option value="jewelry">Jewelry</option>
+                                            <option value="clothing">Clothing</option>
+                                            <option value="documents">Documents</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <x-input-error :messages="$errors->get('category')" class="mt-2" />
+                                    </div>
+                                </div>
 
-                        <div>
-                            <x-input-label for="status" :value="__('Status')" />
-                            <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="lost" {{ old('status') === 'lost' ? 'selected' : '' }}>Lost</option>
-                                <option value="found" {{ old('status') === 'found' ? 'selected' : '' }}>Found</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                                <div class="flex items-center justify-end gap-4 pt-4">
+                                    <a href="{{ route('dashboard') }}" 
+                                        class="text-sm font-medium text-gray-600 hover:text-gray-500 transition-colors duration-200">
+                                        {{ __('Cancel') }}
+                                    </a>
+                                    <button type="submit" 
+                                        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white gradient-bg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                                        {{ __('Submit Report') }}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-
-                        <div id="date_found_container" style="display: none;">
-                            <x-input-label for="date_found" :value="__('Date Found')" />
-                            <x-text-input id="date_found" name="date_found" type="date" class="mt-1 block w-full" :value="old('date_found')" />
-                            <x-input-error :messages="$errors->get('date_found')" class="mt-2" />
-                        </div>
-
-                        <div class="flex justify-end">
-                            <x-secondary-button type="button" class="mr-3" onclick="window.history.back()">
-                                {{ __('Cancel') }}
-                            </x-secondary-button>
-                            <x-primary-button>
-                                {{ __('Submit') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    @push('scripts')
-    <script>
-        document.getElementById('status').addEventListener('change', function() {
-            const dateFoundContainer = document.getElementById('date_found_container');
-            dateFoundContainer.style.display = this.value === 'found' ? 'block' : 'none';
-        });
-
-        // Show/hide date_found field on page load based on initial status value
-        window.addEventListener('load', function() {
-            const status = document.getElementById('status');
-            const dateFoundContainer = document.getElementById('date_found_container');
-            dateFoundContainer.style.display = status.value === 'found' ? 'block' : 'none';
-        });
-    </script>
-    @endpush
 </x-app-layout>
