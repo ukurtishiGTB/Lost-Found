@@ -35,7 +35,9 @@
                                                     </span>
                                                 </div>
                                                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                                    Claimed by: {{ $claim->user->name }}
+                                                    Claimed by: {{ $claim->claimer_name }}
+                                                    <span class="text-gray-400">•</span>
+                                                    {{ $claim->claimer_email }}
                                                 </p>
                                                 <div class="mt-3 glass-effect p-4 rounded-lg">
                                                     <h4 class="text-sm font-medium text-gray-900 dark:text-white">Proof Description:</h4>

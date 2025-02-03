@@ -5,14 +5,12 @@
                 {{ $item->title }}
             </h2>
             <div class="flex items-center space-x-4">
-                @can('update', $item)
-                    <a href="{{ route('items.edit', $item) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white gradient-bg rounded-lg hover:opacity-90 transition-all duration-200">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                        Edit
+                @if($item->status === 'found')
+                    <a href="{{ route('items.claim', $item) }}" 
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white gradient-bg rounded-lg hover:opacity-90 transition-all duration-200">
+                        Claim This Item
                     </a>
-                @endcan
+                @endif
             </div>
         </div>
     </x-slot>
@@ -68,8 +66,9 @@
                                         </div>
                                     @endif
                                     <div class="card-hover p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Posted By</dt>
-                                        <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $item->user->name }}</dd>
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Reported By</dt>
+                                        <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $item->reporter_name }}</dd>
+                                        <dd class="text-sm text-gray-600 dark:text-gray-400">{{ $item->reporter_email }}</dd>
                                     </div>
                                 </dl>
                             </div>

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Item extends Model
@@ -14,19 +13,15 @@ class Item extends Model
         'location',
         'category',
         'status',
-        'user_id',
         'date_found',
-        'image', // Add this if it's missing
+        'image',
+        'reporter_name',    // Add reporter's name
+        'reporter_email',   // Add reporter's email
     ];
 
     protected $casts = [
         'date_found' => 'date',
     ];
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function claims(): HasMany
     {

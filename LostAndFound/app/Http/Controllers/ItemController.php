@@ -9,13 +9,36 @@ class ItemController extends Controller
 {
     public function index()
     {
-        $items = Item::with('user')
-            ->latest()
+        $items = Item::latest()
             ->paginate(10);
         
         return view('items.index', [
             'items' => $items,
             'title' => 'All Items'
+        ]);
+    }
+
+    public function lost()
+    {
+        $items = Item::where('status', 'lost')
+            ->latest()
+            ->paginate(10);
+        
+        return view('items.index', [
+            'items' => $items,
+            'title' => 'Lost Items'
+        ]);
+    }
+
+    public function found()
+    {
+        $items = Item::where('status', 'found')
+            ->latest()
+            ->paginate(10);
+        
+        return view('items.index', [
+            'items' => $items,
+            'title' => 'Found Items'
         ]);
     }
 
@@ -32,19 +55,19 @@ class ItemController extends Controller
             'location' => 'required|string|max:255',
             'category' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'reporter_name' => 'required|string|max:255',
+            'reporter_email' => 'required|email|max:255',
         ]);
-
+    
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('items', 'public');
             $validated['image'] = $path;
         }
-
-        // Temporarily set a fixed user_id for testing
-        $validated['user_id'] = 1;
+    
         $validated['status'] = 'lost';
-
+    
         $item = Item::create($validated);
-
+    
         return redirect()->route('dashboard')
             ->with('success', 'Item reported successfully.');
     }
@@ -85,32 +108,6 @@ class ItemController extends Controller
     public function show(Item $item)
     {
         return view('items.show', compact('item'));
-    }
-
-    public function lost()
-    {
-        $items = Item::where('status', 'lost')
-            ->with('user')
-            ->latest()
-            ->paginate(10);
-        
-        return view('items.index', [
-            'items' => $items,
-            'title' => 'Lost Items'
-        ]);
-    }
-
-    public function found()
-    {
-        $items = Item::where('status', 'found')
-            ->with('user')
-            ->latest()
-            ->paginate(10);
-        
-        return view('items.index', [
-            'items' => $items,
-            'title' => 'Found Items'
-        ]);
     }
 
     public function reportFound(Item $item)

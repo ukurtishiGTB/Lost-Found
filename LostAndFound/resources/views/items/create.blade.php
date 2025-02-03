@@ -18,7 +18,28 @@
                                 <input type="hidden" name="status" value="lost">
                     
                                 <div class="glass-effect p-6 rounded-lg space-y-6">
-                                    <!-- Add this new image upload field -->
+                                    <!-- Reporter Information -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <x-input-label for="reporter_name" :value="__('Your Name')" class="text-base mb-2" />
+                                            <x-text-input id="reporter_name" name="reporter_name" type="text" 
+                                                class="mt-1 block w-full text-base transition-all duration-200" 
+                                                :value="old('reporter_name')" required 
+                                                placeholder="Enter your full name" />
+                                            <x-input-error :messages="$errors->get('reporter_name')" class="mt-2" />
+                                        </div>
+                    
+                                        <div>
+                                            <x-input-label for="reporter_email" :value="__('Your Email')" class="text-base mb-2" />
+                                            <x-text-input id="reporter_email" name="reporter_email" type="email" 
+                                                class="mt-1 block w-full text-base transition-all duration-200" 
+                                                :value="old('reporter_email')" required 
+                                                placeholder="Enter your email address" />
+                                            <x-input-error :messages="$errors->get('reporter_email')" class="mt-2" />
+                                        </div>
+                                    </div>
+                    
+                                    <!-- Image Upload -->
                                     <div>
                                         <x-input-label for="image" :value="__('Item Image')" class="text-base mb-2" />
                                         <input type="file" id="image" name="image" accept="image/*" required
@@ -32,7 +53,7 @@
                                         <x-input-error :messages="$errors->get('image')" class="mt-2" />
                                     </div>
                     
-                                    <!-- Existing fields continue here -->
+                                    <!-- Rest of the form fields -->
                                     <div>
                                         <x-input-label for="title" :value="__('Title')" class="text-base mb-2" />
                                         <x-text-input id="title" name="title" type="text" 

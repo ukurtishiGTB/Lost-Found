@@ -3,27 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Claim extends Model
 {
     protected $fillable = [
-        'user_id',
         'item_id',
+        'claimer_name',
+        'claimer_email',
         'proof_description',
-        'verified',
+        'verified'
     ];
 
     protected $casts = [
-        'verified' => 'boolean',
+        'verified' => 'boolean'
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function item(): BelongsTo
+    public function item()
     {
         return $this->belongsTo(Item::class);
     }

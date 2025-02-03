@@ -32,10 +32,21 @@
                                             View Details
                                         </a>
                                     </div>
-                                    <div class="mt-2 text-sm text-gray-500">
-                                        <p>Location: {{ $item->location }}</p>
-                                        <p>Posted by: {{ $item->user->name }}</p>
-                                        <p>Date: {{ $item->created_at->format('M d, Y') }}</p>
+                                    <div class="mt-2 flex justify-between items-center">
+                                        <div class="text-sm text-gray-500">
+                                            <p>Location: {{ $item->location }}</p>
+                                            <p>Reported by: {{ $item->reporter_name }}</p>
+                                            <p>Date: {{ $item->created_at->format('M d, Y') }}</p>
+                                        </div>
+                                        @if($item->status === 'found')
+                                            <a href="{{ route('items.claim', $item) }}" 
+                                               class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 transition-colors">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Claim Item
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
