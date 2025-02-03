@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Item extends Model
 {
     protected $fillable = [
-        'user_id',
         'title',
         'description',
         'location',
         'category',
         'status',
+        'user_id',
         'date_found',
+        'image', // Add this if it's missing
     ];
 
     protected $casts = [

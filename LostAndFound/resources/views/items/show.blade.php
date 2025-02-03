@@ -19,37 +19,22 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-xl custom-shadow animate-fade-in" style="animation-delay: 0.2s">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-xl custom-shadow animate-fade-in">
                 <div class="p-8">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <!-- Main Content -->
-                        <div class="lg:col-span-2 space-y-8">
+                        <!-- Add Image Display -->
+                        <div class="lg:col-span-2">
+                            @if($item->image)
+                                <div class="rounded-xl overflow-hidden mb-6">
+                                    <img src="{{ Storage::url($item->image) }}" 
+                                         alt="{{ $item->title }}"
+                                         class="w-full h-auto object-cover" />
+                                </div>
+                            @endif
                             <div class="glass-effect p-6 rounded-xl">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Description</h3>
                                 <p class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ $item->description }}</p>
                             </div>
-
-                            @if($item->status === 'found' && !$item->claims()->where('verified', true)->exists())
-                                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-1 rounded-xl animate-fade-in" style="animation-delay: 0.4s">
-                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
-                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Submit a Claim</h3>
-                                        <form action="{{ route('claims.store', $item) }}" method="POST" class="space-y-4">
-                                            @csrf
-                                            <div>
-                                                <label for="proof_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Proof Description</label>
-                                                <textarea name="proof_description" id="proof_description" rows="4" 
-                                                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200"
-                                                    placeholder="Please provide details to prove your ownership..."></textarea>
-                                            </div>
-                                            <div class="flex justify-end">
-                                                <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white gradient-bg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
-                                                    Submit Claim
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            @endif
                         </div>
 
                         <!-- Sidebar -->

@@ -13,11 +13,26 @@
                 <div class="p-8">
                     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-1 rounded-xl">
                         <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
-                            <form method="POST" action="{{ route('items.store') }}" class="space-y-6">
+                            <form method="POST" action="{{ route('items.store') }}" class="space-y-6" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="status" value="lost">
-
+                    
                                 <div class="glass-effect p-6 rounded-lg space-y-6">
+                                    <!-- Add this new image upload field -->
+                                    <div>
+                                        <x-input-label for="image" :value="__('Item Image')" class="text-base mb-2" />
+                                        <input type="file" id="image" name="image" accept="image/*" required
+                                            class="mt-1 block w-full text-sm text-gray-600 dark:text-gray-300
+                                            file:mr-4 file:py-2 file:px-4 file:rounded-lg
+                                            file:border-0 file:font-medium
+                                            file:bg-indigo-50 file:text-indigo-700
+                                            hover:file:bg-indigo-100
+                                            dark:file:bg-gray-700 dark:file:text-gray-300" />
+                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Upload a clear image of the item</p>
+                                        <x-input-error :messages="$errors->get('image')" class="mt-2" />
+                                    </div>
+                    
+                                    <!-- Existing fields continue here -->
                                     <div>
                                         <x-input-label for="title" :value="__('Title')" class="text-base mb-2" />
                                         <x-text-input id="title" name="title" type="text" 

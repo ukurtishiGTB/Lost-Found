@@ -26,6 +26,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($lostItems as $item)
                         <div class="card-hover bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden custom-shadow">
+                            @if($item->image)
+                                <div class="aspect-w-16 aspect-h-9">
+                                    <img src="{{ Storage::url($item->image) }}" 
+                                         alt="{{ $item->title }}"
+                                         class="w-full h-48 object-cover" />
+                                </div>
+                            @endif
                             <div class="p-6">
                                 <h4 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">{{ $item->title }}</h4>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">{{ $item->description }}</p>

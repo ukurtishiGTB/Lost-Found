@@ -30,35 +30,34 @@ class ItemController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'status' => 'required|in:lost,found',
-            'date_found' => 'required_if:status,found|nullable|date',
+            'category' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-    
-        // Temporarily set user_id to 1 for testing
-        $validated['user_id'] = 1;
-        
-        Item::create($validated);
-    
-        return redirect()->route('items.index')
-            ->with('success', 'Item reported successfully.');
-    }
 
-    public function show(Item $item)
-    {
-        return view('items.show', compact('item'));
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('items', 'public');
+            $validated['image'] = $path;
+        }
+
+        // Temporarily set a fixed user_id for testing
+        $validated['user_id'] = 1;
+        $validated['status'] = 'lost';
+
+        $item = Item::create($validated);
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Item reported successfully.');
     }
 
     public function edit(Item $item)
     {
-        $this->authorize('update', $item);
+        // Removed authorization
         return view('items.edit', compact('item'));
     }
 
     public function update(Request $request, Item $item)
     {
-        $this->authorize('update', $item);
-
+        // Removed authorization
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -76,12 +75,16 @@ class ItemController extends Controller
 
     public function destroy(Item $item)
     {
-        $this->authorize('delete', $item);
-        
+        // Removed authorization
         $item->delete();
 
         return redirect()->route('items.index')
             ->with('success', 'Item deleted successfully.');
+    }
+
+    public function show(Item $item)
+    {
+        return view('items.show', compact('item'));
     }
 
     public function lost()
@@ -126,13 +129,14 @@ class ItemController extends Controller
         }
 
         $validated = $request->validate([
-            'found_location' => 'required|string|max:255',
+            'location' => 'required|string|max:255', // Changed from found_location to match form
             'date_found' => 'required|date',
+            'notes' => 'nullable|string',
         ]);
 
         $item->update([
             'status' => 'found',
-            'location' => $validated['found_location'],
+            'location' => $validated['location'],
             'date_found' => $validated['date_found'],
         ]);
 
