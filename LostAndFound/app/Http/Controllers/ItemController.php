@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;  // Add this line
 
 class ItemController extends Controller
 {
@@ -74,35 +75,38 @@ class ItemController extends Controller
 
     public function edit(Item $item)
     {
-        // Removed authorization
         return view('items.edit', compact('item'));
     }
 
     public function update(Request $request, Item $item)
     {
-        // Removed authorization
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'status' => 'required|in:lost,found,claimed',
-            'date_found' => 'required_if:status,found|nullable|date',
+            'category' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
+    
+        if ($request->hasFile('image')) {
+            Storage::disk('public')->delete($item->image);
+            $validated['image'] = $request->file('image')->store('items', 'public');
+        }
+    
         $item->update($validated);
-
-        return redirect()->route('items.show', $item)
-            ->with('success', 'Item updated successfully.');
+    
+        return redirect()->route('items.show', $item)->with('success', 'Item updated successfully');
     }
 
     public function destroy(Item $item)
     {
-        // Removed authorization
+        if ($item->image) {
+            Storage::disk('public')->delete($item->image);
+        }
+        
         $item->delete();
-
-        return redirect()->route('items.index')
-            ->with('success', 'Item deleted successfully.');
+        
+        return redirect()->route('dashboard')->with('success', 'Item deleted successfully');
     }
 
     public function show(Item $item)

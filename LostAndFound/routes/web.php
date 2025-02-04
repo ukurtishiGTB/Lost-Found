@@ -42,6 +42,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/claims/{claim}/verify', [ClaimController::class, 'verify'])->name('claims.verify');
     Route::get('/admin/items', [ItemController::class, 'adminIndex'])->name('admin.items.index');
     Route::delete('/admin/items/{item}', [ItemController::class, 'destroy'])->name('admin.items.destroy');
+    // Add these routes in the admin section
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+        Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
+        Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+    });
 });
 
 // Authentication routes (for admin only)

@@ -48,6 +48,16 @@
                                         @if($item->status === 'lost')
                                             <a href="{{ route('items.report-found', $item) }}" class="text-green-600 hover:text-green-500 font-medium text-sm hover:underline">Report Found</a>
                                         @endif
+                                        @auth
+                                            @if(auth()->user())
+                                                <a href="{{ route('items.edit', $item) }}" class="text-blue-600 hover:text-blue-500 font-medium text-sm hover:underline">Edit</a>
+                                                <form action="{{ route('items.destroy', $item) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-500 font-medium text-sm hover:underline" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                                                </form>
+                                            @endif
+                                        @endauth
                                     </div>
                                 </div>
                             </div>
